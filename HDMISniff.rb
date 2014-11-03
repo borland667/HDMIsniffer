@@ -12,6 +12,15 @@ ip =  IPAddr.new(MULTICAST_ADDR).hton + IPAddr.new("0.0.0.0").hton
 sock = UDPSocket.new
 sock.setsockopt(Socket::IPPROTO_IP, Socket::IP_ADD_MEMBERSHIP, ip)
 sock.bind(Socket::INADDR_ANY, PORT)
+
+begin
+  socket = UDPSocket.open
+  socket.setsockopt(Socket::IPPROTO_IP, Socket::IP_TTL, [1].pack('i'))
+  socket.send("\x54\x46\x36\x7A\x60\x02\x00\x00\x00\x00\x00\x03\x03\x01\x00\x26\x00\x00\x00\x00\x02\x34\xC2", 0, MULTICAST_ADDR, PORT)
+ensure
+  socket.close 
+end
+
 loop do
   msg, info = sock.recvfrom(1024)
 #  puts "MSG: #{msg} from #{info[2]} (#{info[3]})/#{info[1]} len #{msg.size}" 
