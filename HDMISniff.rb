@@ -8,6 +8,7 @@ require 'ipaddr'
 
 MULTICAST_ADDR = "226.2.2.2"
 PORT = 2068
+SENDERIP = 192.168.168.55
 CONTROLPORT = 48689
 ip =  IPAddr.new(MULTICAST_ADDR).hton + IPAddr.new("0.0.0.0").hton
 sock = UDPSocket.new
@@ -16,10 +17,11 @@ sock.bind(Socket::INADDR_ANY, PORT)
 
 begin
   socket = UDPSocket.open
-  socket.setsockopt(Socket::IPPROTO_IP, Socket::IP_TTL, [1].pack('i'))
-  socket.send("\x54\x46\x36\x7A\x60\x02\x00\x00\x00\x00\x00\x03\x03\x01\x00\x26\x00\x00\x00\x00\x02\x34\xC2", 0, MULTICAST_ADDR, CONTROLPORT)
+  socket.send("\x54\x46\x36\x7A\x60\x02\x00\x00\x00\x00\x00\x03\x03\x01\x00\x26\x00\x00\x00\x00\x02\x34\xC2", 0, SENDERIP, CONTROLPORT)
+  puts "sent control message"
 ensure
   socket.close 
+  puts "closed the control socket"
 end
 
 loop do
