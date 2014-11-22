@@ -7,7 +7,6 @@ def main():
 
     # Look up multicast group address in name server and find out IP version
     addrinfo = socket.getaddrinfo("226.2.2.2", None)[0]
-    print addrinfo[0]
 
     # Create a socket
     s = socket.socket(addrinfo[0], socket.SOCK_DGRAM)
