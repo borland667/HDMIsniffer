@@ -34,7 +34,7 @@ def multicast_monitor_callback(pkt):
 
 	notopen=1
 
-	if (pkt[UDP].dport==2068):
+	if (pkt[UDP] && pkt[UDP].dport==2068):
 
 		frame_n=ord(pkt[Raw].load[0])*256+ord(pkt[Raw].load[1])
               	part=ord(pkt[Raw].load[2])*256+ord(pkt[Raw].load[3])
