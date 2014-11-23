@@ -4,7 +4,7 @@
 #For Linux - Sniffs all incoming and outgoing packets :)
 #Silver Moon (m00n.silv3r@gmail.com)
 #modified by danman
-
+#modified again by kfinisterre@pillartechnology.com
 
 import socket, sys
 from struct import *
@@ -25,6 +25,10 @@ def eth_addr (a) :
 #define ETH_P_ALL    0x0003          /* Every packet (be careful!!!) */
 try:
     s = socket.socket( socket.AF_PACKET , socket.SOCK_RAW , socket.ntohs(0x0003))
+
+    # This allows us to connect via VLC and the TCP handler
+    # /Applications/VLC.app/Contents/MacOS/VLC --playlist-autostart tcp://192.168.168.229:1234
+
     lport = "1234"
     lsocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     lsocket.bind(("", int(lport)))
@@ -39,6 +43,7 @@ except socket.error , msg:
 
 notopen=1
 
+# Mpeg Demux Mime Boundary
 connection.send("--myboundary")
 connection.send("\n")
 connection.send("Content-Type: image/jpeg")
@@ -100,10 +105,12 @@ while True:
             h_size = eth_length + iph_length + udph_length
             data = packet[h_size:]
 
+	    # M-JPEG streamed as multipart - http://en.wikipedia.org/wiki/Motion_JPEG
             if (dest_port==2068):
               frame_n=ord(data[0])*256+ord(data[1])
               part=ord(data[2])*256+ord(data[3])
               if (part==0) : # & (notopen==1) :
+		 # Mpeg Demux Mime Boundary
 		 connection.send("\n")
 		 connection.send("--myboundary")
 		 connection.send("\n")
@@ -113,4 +120,5 @@ while True:
 
                  notopen=0
               if notopen==0:
+  	         # JFIF - http://www.w3.org/Graphics/JPEG/ 
 		 connection.send(data[4:])
