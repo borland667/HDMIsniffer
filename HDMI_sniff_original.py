@@ -90,9 +90,17 @@ while True:
               part=ord(data[2])*256+ord(data[3])
               if (part==0) : # & (notopen==1) :
                  #f = open('files/'+str(frame_n)+"_"+str(part).zfill(3)+'.jpg', 'w')
-		 print "\n--myboundary\nContent-Type: image/jpeg\n"
+		 # There is a big difference between print() and sys.stdout.write()
+ 		 sys.stdout.flush()
+		 sys.stdout.write("\n")
+		 sys.stdout.write("--myboundary")
+		 sys.stdout.write("\n")
+		 sys.stdout.write("Content-Type: image/jpeg")
+		 sys.stdout.write("\n")
+		 sys.stdout.write("\n")
+ 		 sys.stdout.flush()
                  notopen=0
               if notopen==0:
                  #f.write(data[4:])
+ 		 sys.stdout.flush()
 		 sys.stdout.write(data[4:])
-
